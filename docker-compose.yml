@@ -3,7 +3,7 @@
 services:
   backend:
     build:
-      context: ./backend
+      context: ./
       dockerfile: Dockerfile
     container_name: fastapi_backend_treelogy
     ports:
