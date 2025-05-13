@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.post("/createPedido", summary="Crear pedido de compra completo", response_description="Confirmación de creación del pedido")
 def create_order(pedido: PedidoCompraCreate):
-    return {"message": "Pedido de compra recibido correctamente"}
+    return {"message": "Pedido de compra creado correctamente"}
 
 
 @router.get("/getPedidos", summary="Obtener listado de pedidos de compra", response_description="Listado completo de pedidos")

@@ -15,7 +15,7 @@ def create_order(
     pedido: PedidoVentaCreate = Body(..., description="Estructura completa del pedido de venta")
 ):
     return {
-        "message": "Pedido de venta recibido correctamente",
+        "message": "Pedido de venta creado correctamente",
     }
 
 
