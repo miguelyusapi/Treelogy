@@ -1,0 +1,4 @@
+# Dependencias del proyecto
+fastapi[standard]==0.115.5
+uvicorn[standard]==0.32.1
+
