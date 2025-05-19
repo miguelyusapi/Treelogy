@@ -1,1 +1,0 @@
-# Funciones relacionadas con seguridad
