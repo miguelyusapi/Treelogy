@@ -1,10 +1,44 @@
 # version: "3.8"
-
 services:
   backend:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     container_name: fastapi_backend_treelogy
     ports:
       - "8000:8000"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=mssql+pyodbc://sa:${SA_PASSWORD}@db:1433/treelogy?driver=ODBC+Driver+17+for+SQL+Server
+    env_file:
+      - .env
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: SQL_Server_treelogy
+    env_file:
+      - .env
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
+    ports:
+      - "1433:1433"
+
+  db_init:
+    image: mcr.microsoft.com/mssql-tools:latest
+    env_file:
+      - .env
+    volumes:
+      - ./app/version1/db/scripts:/scripts
+    entrypoint: >
+      bash -c "
+        echo 'Waiting for SQL Server to start...';
+        sleep 20;
+        for script in /scripts/*.sql; do
+          echo Running $$script;
+          /opt/mssql-tools/bin/sqlcmd -S db -U sa -P \"$$SA_PASSWORD\" -i \"$$script\";
+        done
+      "

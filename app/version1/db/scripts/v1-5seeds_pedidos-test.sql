@@ -1,0 +1,223 @@
+-- USE FARMA_SQL;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- Script de pruebas con transacciones y TRY/CATCH para capturar errores
+-- -- Cada bloque se revierte tras ejecutarse, de modo que la base de datos no se ve alterada.
+-- --------------------------------------------------------------------------------
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 1: UNIQUE en ventas.ventas_linea
+-- -- (venta_id, num_linea_pedido_venta)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 1: UNIQUE violation en ventas.ventas_linea';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO ventas.ventas_linea
+--       (venta_id, num_pedido_venta, num_linea_pedido_venta,
+--        num_pedido_lugonet, num_acuerdo_venta,
+--        cod_articulo_cooperativa, cantidad_solicitada,
+--        cantidad_bonificada, cantidad_confirmada,
+--        pvl, pvl_neto, estado_linea_pedido)
+--     VALUES
+--       (
+--         (SELECT TOP 1 venta_id FROM ventas.ventas_cabecera WHERE num_pedido_venta = 'PEDV001'),
+--         'PEDV001', '1', NULL, 'ACV001',
+--         'ART999', 1, 0, 1,
+--         5.00, 5.00, 'PENDIENTE'
+--       );
+--     PRINT 'Test 1: ¡Sorpresa! No se detectó UNIQUE violation.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 1: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 2: FOREIGN KEY en ventas.ventas_linea (venta_id inexistente)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 2: FK violation en ventas.ventas_linea';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO ventas.ventas_linea
+--       (venta_id, num_pedido_venta, num_linea_pedido_venta,
+--        num_pedido_lugonet, num_acuerdo_venta,
+--        cod_articulo_cooperativa, cantidad_solicitada,
+--        cantidad_bonificada, cantidad_confirmada,
+--        pvl, pvl_neto, estado_linea_pedido)
+--     VALUES
+--       (9999, 'PEDV999', '1', NULL, 'ACV999',
+--        'ART000', 2, 0, 2,
+--        10.00, 20.00, 'PENDIENTE'
+--       );
+--     PRINT 'Test 2: ¡Sorpresa! No se detectó FK violation.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 2: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 3: UNIQUE en ventas.ventas_reporte_movimientos
+-- -- (cod_cooperativa, id_movimiento)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 3: UNIQUE violation en ventas_reporte_movimientos';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO ventas.ventas_reporte_movimientos
+--       (id_movimiento, num_pedido_venta, num_linea_pedido_venta,
+--        cod_cooperativa, puerta, num_albaran, num_linea_albaran,
+--        fecha_generacion_albaran, fecha_real_movimiento,
+--        cantidad, cantidad_bonificada_servida,
+--        lote_calculado, lote, fecha_caducidad, almacen_origen_pedido_integrado)
+--     VALUES
+--       ('MOVS001', 'PEDV001', '2', 'COOP1', 'P1', 'ALB999', '1',
+--        '2025-05-21', '2025-05-21',
+--        1, 0, 0, 'L999', '2026-05-21', 'ALM1'
+--       );
+--     PRINT 'Test 3: ¡Sorpresa! No se detectó UNIQUE violation.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 3: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 4: Inserción “floja” en ventas_reporte_movimientos (sin FK)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 4: Inserción floja en ventas_reporte_movimientos';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO ventas.ventas_reporte_movimientos
+--       (id_movimiento, num_pedido_venta, num_linea_pedido_venta,
+--        cod_cooperativa, puerta, num_albaran, num_linea_albaran,
+--        fecha_generacion_albaran, fecha_real_movimiento,
+--        cantidad, cantidad_bonificada_servida,
+--        lote_calculado, lote, fecha_caducidad, almacen_origen_pedido_integrado)
+--     VALUES
+--       ('MOVS_X01', 'PEDV999', '99', 'COOP1', 'P1', 'ALB1000', '1',
+--        '2025-05-22', '2025-05-22',
+--        5, 0, 0, 'L1000', '2026-05-22', 'ALM1'
+--       );
+--     PRINT 'Test 4: ÉXITO esperado, la inserción floja pasó correctamente.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 4: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 5: NOT NULL en ventas.ventas_reporte_movimientos (omitido id_movimiento)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 5: NOT NULL violation en ventas_reporte_movimientos';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO ventas.ventas_reporte_movimientos
+--       (num_pedido_venta, num_linea_pedido_venta,
+--        cod_cooperativa, puerta, num_albaran, num_linea_albaran,
+--        fecha_generacion_albaran, fecha_real_movimiento,
+--        cantidad, cantidad_bonificada_servida,
+--        lote_calculado, lote, fecha_caducidad, almacen_origen_pedido_integrado)
+--     VALUES
+--       ('PEDV001', '1', 'COOP1', 'P1', 'ALB101', '1',
+--        '2025-05-23', '2025-05-23',
+--        2, 0, 0, 'L101', '2026-05-23', 'ALM1'
+--       );
+--     PRINT 'Test 5: ¡Sorpresa! No se detectó NOT NULL violation.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 5: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 6: Datos extremos en ventas.ventas_linea
+-- -- (cantidad negativa, descuento >100%, pvl_neto negativo)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 6: Datos extremos en ventas.ventas_linea';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO ventas.ventas_linea
+--       (venta_id, num_pedido_venta, num_linea_pedido_venta,
+--        num_pedido_lugonet, num_acuerdo_venta,
+--        cod_articulo_cooperativa, cantidad_solicitada,
+--        cantidad_bonificada, cantidad_confirmada,
+--        pvl, descuento_porcentaje, pvl_neto,
+--        estado_linea_pedido)
+--     VALUES
+--       (
+--         (SELECT TOP 1 venta_id FROM ventas.ventas_cabecera WHERE num_pedido_venta = 'PEDV001'),
+--         'PEDV001', '99', NULL, 'ACV001',
+--         'ART_NEG', -5, 0, -5,
+--         50.00, 150.00, -25.00,
+--         'PENDIENTE'
+--       );
+--     PRINT 'Test 6: ¡Sorpresa! No se detectó fallo de datos extremos.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 6: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 7: UNIQUE en compras.compras_reporte_movimientos
+-- -- (id_movimiento)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 7: UNIQUE violation en compras_reporte_movimientos';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO compras.compras_reporte_movimientos
+--       (id_movimiento, num_pedido_compra, num_linea_pedido_compra,
+--        num_albaran, num_linea_albaran,
+--        fecha_generacion_albaran, fecha_real_movimiento,
+--        cantidad, lote_calculado, lote, fecha_caducidad)
+--     VALUES
+--       ('MOVC001', 'PCP001', '1', 'ALBC999', '1',
+--        '2025-05-24', '2025-05-24',
+--        1, 0, 'L999', '2026-05-24'
+--       );
+--     PRINT 'Test 7: ¡Sorpresa! No se detectó UNIQUE violation.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 7: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
+
+-- --------------------------------------------------------------------------------
+-- -- BLOQUE 8: Inserción floja en compras_reporte_movimientos (sin FK)
+-- --------------------------------------------------------------------------------
+-- PRINT '--- Test 8: Inserción floja en compras_reporte_movimientos';
+-- BEGIN TRY
+--   BEGIN TRAN;
+--     INSERT INTO compras.compras_reporte_movimientos
+--       (id_movimiento, num_pedido_compra, num_linea_pedido_compra,
+--        num_albaran, num_linea_albaran,
+--        fecha_generacion_albaran, fecha_real_movimiento,
+--        cantidad, lote_calculado, lote, fecha_caducidad)
+--     VALUES
+--       ('MOVC_X01', 'PCP999', '99', 'ALBC1000', '1',
+--        '2025-05-25', '2025-05-25',
+--        5, 1, 'L1000', '2026-05-25'
+--       );
+--     PRINT 'Test 8: ÉXITO esperado, la inserción floja pasó correctamente.';
+--     COMMIT;
+-- END TRY
+-- BEGIN CATCH
+--   PRINT 'Test 8: ERROR ' + CAST(ERROR_NUMBER() AS VARCHAR(10)) + ' - ' + ERROR_MESSAGE();
+--   ROLLBACK;
+-- END CATCH;
+-- GO
