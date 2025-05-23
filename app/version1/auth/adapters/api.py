@@ -10,9 +10,9 @@ def login(
     password: str = Form(..., example="")
 ):
     if username == "pharma" and password == "1234":
-        token = create_access_token({"sub": "pharma"})
+        token = create_access_token({"sub": "pharma", "id_pharma": "PHARMA"})
     elif username == "coop" and password == "1234":
-        token = create_access_token({"sub": "coop"})
+        token = create_access_token({"sub": "coop", "id_coop": "COOPERATIVA"})
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciales inválidas")
 

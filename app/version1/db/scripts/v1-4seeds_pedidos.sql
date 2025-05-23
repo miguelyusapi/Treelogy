@@ -9,10 +9,10 @@ GO
 -- Pedido de ventas 1 (ABIERTO)
 INSERT INTO ventas.ventas_cabecera
   (num_pedido_venta, cod_cooperativa, puerta, acuerdo_venta_asociado,
-   fecha_pedido_farmacia, fecha_pedido_cooperativa, estado_pedido)
+   fecha_pedido_farmacia, fecha_pedido_cooperativa, estado_pedido, id_cooperativa)
 VALUES
   ('PEDV001', 'COOP1', 'P1', 'ACV001',
-   '2025-05-17', '2025-05-18', 'ABIERTO');
+   '2025-05-17', '2025-05-18', 'ABIERTO', 'COOPERATIVA1');
 -- Captura el ID en la misma transacción
 DECLARE @vid1 INT = SCOPE_IDENTITY();
 
@@ -42,10 +42,10 @@ VALUES
 -- Pedido de ventas 2 (COMPLETADO)
 INSERT INTO ventas.ventas_cabecera
   (num_pedido_venta, cod_cooperativa, puerta, acuerdo_venta_asociado,
-   fecha_pedido_farmacia, fecha_pedido_cooperativa, estado_pedido)
+   fecha_pedido_farmacia, fecha_pedido_cooperativa, estado_pedido, id_cooperativa)
 VALUES
   ('PEDV002', 'COOP2', 'P2', 'ACV002',
-   '2025-05-15', '2025-05-16', 'cerrado');
+   '2025-05-15', '2025-05-16', 'cerrado', "COOPERATIVA2");
 DECLARE @vid2 INT = SCOPE_IDENTITY();
 
 -- Líneas para PEDV002

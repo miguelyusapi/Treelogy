@@ -13,7 +13,7 @@ ALTER TABLE ventas.ventas_cabecera
 GO
 
 ALTER TABLE ventas.ventas_cabecera
-  ALTER COLUMN estado_pedido VARCHAR(7) NOT NULL;
+  ALTER COLUMN estado_pedido VARCHAR(7) NULL;
 GO
 
 ALTER TABLE ventas.ventas_cabecera
@@ -53,7 +53,7 @@ ALTER TABLE ventas.ventas_linea
 GO
 
 ALTER TABLE ventas.ventas_linea
-  ALTER COLUMN estado_linea_pedido VARCHAR(7) NOT NULL;
+  ALTER COLUMN estado_linea_pedido VARCHAR(7) NULL;
 GO
 
 ALTER TABLE ventas.ventas_linea
@@ -100,7 +100,7 @@ ALTER TABLE compras.compras_cabecera
     );
 GO
 ALTER TABLE compras.compras_cabecera
-  ALTER COLUMN estado_pedido VARCHAR(7) NOT NULL;
+  ALTER COLUMN estado_pedido VARCHAR(7) NULL;
 GO
 
 ALTER TABLE compras.compras_cabecera
@@ -132,7 +132,7 @@ ALTER TABLE compras.compras_linea
 GO
 
 ALTER TABLE compras.compras_linea
-  ALTER COLUMN estado_linea_pedido VARCHAR(7) NOT NULL;
+  ALTER COLUMN estado_linea_pedido VARCHAR(7) NULL;
 GO
 
 ALTER TABLE compras.compras_linea

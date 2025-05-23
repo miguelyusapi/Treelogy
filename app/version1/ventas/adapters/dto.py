@@ -12,7 +12,7 @@ class CabeceraPedidoVentaDTO(BaseModel):
     acuerdo_venta_asociado: str
     num_pedido_laboratorio: str
     fecha_pedido_farmacia: date
-    fecha_pedido_cooperativa: date
+    fecha_pedido_cooperativa: Optional[date]
     cod_cliente_cooperativa: str
     estado_pedido: str
 
@@ -22,17 +22,17 @@ class CabeceraPedidoVentaDTO(BaseModel):
 class LineaPedidoVentaDTO(BaseModel):
     num_pedido_venta: str
     num_linea_pedido_venta: int
-    num_pedido_lugonet: int
-    num_acuerdo_venta: int
+    num_pedido_lugonet: str
+    num_acuerdo_venta: str
     cod_articulo_cooperativa: str
     cantidad_solicitada: float
     cantidad_bonificada: float
     cantidad_confirmada: float
     pvl: float
-    descuento_porcentaje: float
-    descuento_unitario: float
+    descuento_porcentaje: Optional[float]
+    descuento_unitario: Optional[float]
     pvl_neto: float
-    cargo_cooperativo: str
+    cargo_cooperativo: Optional[int]
     estado_linea_pedido: str
 
     def to_domain(self) -> LineaPedidoVenta:
@@ -76,7 +76,7 @@ class PedidoVentaPharmaDTO(BaseModel):
                         "descuento_porcentaje": 10.0,
                         "descuento_unitario": 1.5,
                         "pvl_neto": 13.5,
-                        "cargo_cooperativo": "CARGO1",
+                        "cargo_cooperativo": 0,
                         "estado_linea_pedido": "confirmada"
                     }
                 ]
@@ -143,27 +143,27 @@ class CabeceraPedidoVentaLecturaDTO(BaseModel):
     cod_cooperativa: str
     puerta: str
     acuerdo_venta_asociado: str
-    num_pedido_laboratorio: str
+    num_pedido_laboratorio: Optional[str]
     fecha_pedido_farmacia: date
     fecha_pedido_cooperativa: date
-    cod_cliente_cooperativa: str
+    cod_cliente_cooperativa: Optional[str]
     estado_pedido: str
 
 
 class LineaPedidoVentaLecturaDTO(BaseModel):
     num_pedido_venta: str
     num_linea_pedido_venta: int
-    num_pedido_lugonet: int
-    num_acuerdo_venta: int
+    num_pedido_lugonet: Optional[int]
+    num_acuerdo_venta: Optional[str]
     cod_articulo_cooperativa: str
     cantidad_solicitada: float
     cantidad_bonificada: float
     cantidad_confirmada: float
     pvl: float
-    descuento_porcentaje: float
-    descuento_unitario: float
+    descuento_porcentaje: Optional[float]
+    descuento_unitario: Optional[float]
     pvl_neto: float
-    cargo_cooperativo: str
+    cargo_cooperativo: Optional[str]
     cod_proveedor_cooperativa: str
     computa_aprovisionamiento: bool
     ocultar_web: bool
@@ -174,3 +174,10 @@ class LineaPedidoVentaLecturaDTO(BaseModel):
 class PedidoVentaLecturaDTO(BaseModel):
     cabecera: CabeceraPedidoVentaLecturaDTO
     lineas: List[LineaPedidoVentaLecturaDTO]
+
+    @classmethod
+    def from_domain(cls, pedido: PedidoVenta) -> 'PedidoVentaLecturaDTO':
+        return cls(
+            cabecera=CabeceraPedidoVentaLecturaDTO(**pedido.cabecera.__dict__),
+            lineas=[LineaPedidoVentaLecturaDTO(**l.__dict__) for l in pedido.lineas]
+        )
