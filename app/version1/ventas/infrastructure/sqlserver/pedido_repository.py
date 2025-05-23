@@ -1,6 +1,6 @@
 from version1.ventas.application.ports import PedidoVentaRepository
-from version1.ventas.adapters.dto_pharma import PedidoVentaPharmaEditable
-from version1.ventas.adapters.dto_coop import PedidoVentaCoopEditable
+from version1.ventas.adapters.dto.dto_pharma import PedidoVentaPharmaEditable
+from version1.ventas.adapters.dto.dto_coop import PedidoVentaCoopEditable
 from version1.ventas.domain.entities import PedidoVenta
 import pyodbc
 

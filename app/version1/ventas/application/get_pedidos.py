@@ -1,5 +1,4 @@
 from typing import List, Optional
-from version1.ventas.adapters.dto import PedidoVentaLecturaDTO
 from version1.ventas.domain.entities import PedidoVenta
 from version1.ventas.infrastructure.sqlserver.pedido_repository import SqlServerPedidoRepository
 

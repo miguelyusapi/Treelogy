@@ -38,9 +38,9 @@ class LineaPedidoVenta:
     pvl_neto: Optional[Decimal] = None
     cargo_cooperativo: Optional[Decimal] = None
     cod_proveedor_cooperativa: Optional[str] = None
-    computa_aprovisionamiento: Optional[bool] = False
-    ocultar_web: Optional[bool] = False
-    no_unnefar: Optional[bool] = False
+    computa_aprovisionamiento: Optional[bool] = None
+    ocultar_web: Optional[bool] = None
+    no_unnefar: Optional[bool] = None
     estado_linea_pedido: Optional[str] = None
 
 
@@ -48,3 +48,23 @@ class LineaPedidoVenta:
 class PedidoVenta:
     cabecera: CabeceraPedidoVenta
     lineas: List[LineaPedidoVenta]
+
+
+@dataclass
+class ReporteMovimientoVenta:
+    id_movimiento: Optional[int] = None
+    num_pedido_venta: Optional[str] = None
+    num_linea_pedido_venta: Optional[int] = None
+    cod_cooperativa: Optional[str] = None
+    puerta: Optional[str] = None
+    num_albaran: Optional[str] = None
+    num_linea_albaran: Optional[int] = None
+    fecha_generacion_albaran: Optional[datetime] = None
+    fecha_real_movimiento: Optional[datetime] = None
+    motivo_devolucion: Optional[str] = None
+    cantidad: Optional[float] = None
+    cantidad_bonificada_servida: Optional[float] = None
+    lote_calculado: Optional[bool] = None
+    lote: Optional[str] = None
+    fecha_caducidad: Optional[datetime] = None
+    almacen_origen_pedido_integrado: Optional[str] = None

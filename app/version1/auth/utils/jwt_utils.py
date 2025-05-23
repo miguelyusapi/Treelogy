@@ -1,10 +1,13 @@
 import jwt
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
 
-# ⚠ Cambia esta clave por una segura en producción
-SECRET_KEY = "clave_super_secreta"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 def create_access_token(data: dict) -> str:

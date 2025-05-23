@@ -1,47 +1,51 @@
-from dataclasses import dataclass
-from datetime import date
+from dataclasses import dataclass, field
+from datetime import date, datetime
 from typing import List, Optional
+from decimal import Decimal
+from zoneinfo import ZoneInfo
+
+MADRID = ZoneInfo("Europe/Madrid")
 
 @dataclass
 class CabeceraPedidoCompra:
-    num_pedido_compra: str                            
-    cod_cooperativa: str                         
-    puerta: str                                  
-    cod_proveedor_cooperativa: str  
-    TipoPedido: str                               
-    dias_aplazamiento: int          
-    pvl: float                       
-    pvl_neto: float                  
-    precio_libre: float              
-    precio_libre_neto: float        
-    dto_comercial: float        
-    dto_logistico: float            
-    dto_pronto_pago: float          
-    dto_gestion: float                
-    no_unnefar: bool                            
-    fecha_pedido: date                          
-    fecha_prevista_entrega: date       
-    num_acuerdo_compra: str           
-    estado_pedido: str        
+    num_pedido_compra: Optional[str] = None
+    cod_cooperativa: Optional[str] = None
+    puerta: Optional[str] = None
+    cod_proveedor_cooperativa: Optional[str] = None
+    tipo_pedido: Optional[str] = None
+    dias_aplazamiento: Optional[int] = None
+    pvl: Optional[Decimal] = None
+    pvl_neto: Optional[Decimal] = None
+    precio_libre: Optional[Decimal] = None
+    precio_libre_neto: Optional[Decimal] = None
+    dto_comercial: Optional[Decimal] = None
+    dto_logistico: Optional[Decimal] = None
+    dto_pronto_pago: Optional[Decimal] = None
+    dto_gestion: Optional[Decimal] = None
+    no_unnefar: bool = False
+    fecha_pedido: datetime = field(default_factory=lambda: datetime.now(tz=MADRID).date())
+    fecha_prevista_entrega: Optional[datetime] = None
+    num_acuerdo_compra: Optional[str] = None
+    estado_pedido: Optional[str] = None
     almacen_origen_pedido_integrado: Optional[str] = None
+    id_cooperativa: Optional[str] = None
 
 @dataclass
 class LineaPedidoCompra:
-    num_pedido_compra: str                    
-    num_linea_pedido_compra: int                    
-    cod_articulo_cooperativa: str                    
-    cantidad_solicitada: float       
-    pvl: float                          
-    pvl_neto: float                 
-    precio_libre: float              
-    precio_libre_neto: float            
-    dto_comercial: float             
-    dto_logistico: float                
-    dto_pronto_pago: float              
-    dto_gestion: float  
-    estado_linea_pedido: str         
-    pedido_cooperativa: Optional[str] = None           
-
+    num_pedido_compra: Optional[str] = None
+    num_linea_pedido_compra: Optional[int] = None
+    cod_articulo_cooperativa: Optional[str] = None
+    cantidad_solicitada: Optional[Decimal] = None
+    pvl: Optional[Decimal] = None
+    pvl_neto: Optional[Decimal] = None
+    precio_libre: Optional[Decimal] = None
+    precio_libre_neto: Optional[Decimal] = None
+    dto_comercial: Optional[Decimal] = None
+    dto_logistico: Optional[Decimal] = None
+    dto_pronto_pago: Optional[Decimal] = None
+    dto_gestion: Optional[Decimal] = None
+    pedido_cooperativa: Optional[str] = None
+    estado_linea_pedido: Optional[str] = None
 
 @dataclass
 class PedidoCompra:
@@ -56,10 +60,10 @@ class MovimientoCompra:
     num_linea_pedido_compra: int
     num_albaran: str
     num_linea_albaran: int
-    fecha_generacion_albaran: date
-    fecha_real_movimiento: date
-    cantidad: float
-    motivo_devolucion: Optional[str]
-    lote_calculado: bool
-    lote: str
-    fecha_caducidad: date
+    fecha_generacion_albaran: datetime
+    fecha_real_movimiento: datetime
+    cantidad: Decimal
+    motivo_devolucion: Optional[str] = None
+    lote_calculado: bool = False
+    lote: Optional[str] = None
+    fecha_caducidad: Optional[date] = None

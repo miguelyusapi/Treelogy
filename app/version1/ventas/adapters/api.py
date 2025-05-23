@@ -1,16 +1,16 @@
 from datetime import date
 from typing import List, Optional
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
-from version1.ventas.application.update_pedido_pharma import UpdatePedidoPharmaUseCase
-from version1.ventas.application.update_pedido_coop import UpdatePedidoCoopUseCase
+from version1.ventas.application.use_case_pharma.update_pedido_pharma import UpdatePedidoPharmaUseCase
+from version1.ventas.application.use_case_coop.update_pedido_coop import UpdatePedidoCoopUseCase
 from version1.ventas.application.get_pedido import GetPedidoUseCase
 from version1.ventas.application.get_pedidos import GetPedidosUseCase
-from version1.ventas.application.create_pedido_pharma import CreatePedidoPharmaUseCase
-from version1.ventas.adapters.dto_pharma import PedidoVentaPharmaEditable, PedidoVentaPharmaEscritura, PedidoVentaPharmaLectura
+from version1.ventas.application.use_case_pharma.create_pedido_pharma import CreatePedidoPharmaUseCase
+from version1.ventas.adapters.dto.dto_pharma import PedidoVentaPharmaEditable, PedidoVentaPharmaEscritura, PedidoVentaPharmaLectura
 from version1.auth.application.security import get_current_user
-from version1.ventas.adapters.dto_coop import PedidoVentaCoopEditable, PedidoVentaCoopEscritura, PedidoVentaCoopLectura
+from version1.ventas.adapters.dto.dto_coop import PedidoVentaCoopEditable, PedidoVentaCoopEscritura, PedidoVentaCoopLectura
 from version1.ventas.infrastructure.sqlserver.pedido_repository import SqlServerPedidoRepository
-from version1.ventas.application.create_pedido_coop import CreatePedidoCoopUseCase
+from version1.ventas.application.use_case_coop.create_pedido_coop import CreatePedidoCoopUseCase
 from dotenv import load_dotenv
 import os
 

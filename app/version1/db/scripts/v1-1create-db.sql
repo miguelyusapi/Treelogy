@@ -17,12 +17,12 @@ GO
 -- 3. Tablas de VENTAS
 CREATE TABLE ventas.ventas_cabecera (
   venta_id INT IDENTITY(1,1) PRIMARY KEY,
-  num_pedido_venta NVARCHAR(255) NULL,
-  cod_cooperativa NVARCHAR(255) NULL,
+  num_pedido_venta NVARCHAR(255) NOT NULL,
+  cod_cooperativa NVARCHAR(255) NOT NULL,
   puerta NVARCHAR(255) NULL,
   acuerdo_venta_asociado NVARCHAR(255) NULL,
   num_pedido_laboratorio NVARCHAR(255) NULL,
-  fecha_pedido_farmacia DATE NULL,
+  fecha_pedido_farmacia DATE NOT NULL,
   fecha_pedido_cooperativa DATE NULL,
   cod_cliente_cooperativa NVARCHAR(255) NULL,
   estado_pedido NVARCHAR(255) NULL,
@@ -34,24 +34,24 @@ GO
 CREATE TABLE ventas.ventas_linea (
   venta_linea_id INT IDENTITY(1,1) PRIMARY KEY,
   venta_id INT NOT NULL,
-  num_pedido_venta NVARCHAR(255) NULL,
-  num_linea_pedido_venta NVARCHAR(255) NULL,
+  num_pedido_venta NVARCHAR(255) NOT NULL,
+  num_linea_pedido_venta NVARCHAR(255) NOT NULL,
   num_pedido_lugonet NVARCHAR(255) NULL,
   num_acuerdo_venta NVARCHAR(255) NULL,
-  cod_articulo_cooperativa NVARCHAR(255) NULL,
-  cantidad_solicitada INT NULL,
-  cantidad_bonificada INT NULL,
-  cantidad_confirmada INT NULL,
-  pvl DECIMAL(18,2) NULL,
-  descuento_porcentaje DECIMAL(18,2) NULL,
-  descuento_unitario DECIMAL(18,2) NULL,
-  pvl_neto DECIMAL(18,2) NULL,
-  cargo_cooperativo DECIMAL(18,2) NULL,
+  cod_articulo_cooperativa NVARCHAR(255) NOT NULL,
+  cantidad_solicitada INT NOT NULL,
+  cantidad_bonificada INT NOT NULL,
+  cantidad_confirmada INT NOT NULL,
+  pvl DECIMAL(18,2) NOT NULL,
+  descuento_porcentaje DECIMAL(18,2) NOT NULL,
+  descuento_unitario DECIMAL(18,2) NOT NULL,
+  pvl_neto DECIMAL(18,2) NOT NULL,
+  cargo_cooperativo DECIMAL(18,2) NOT NULL,
   cod_proveedor_cooperativa NVARCHAR(255) NULL,
-  computa_aprovisionamiento BIT NULL,
-  ocultar_web BIT NULL,
-  no_unnefar BIT NULL,
-  estado_linea_pedido NVARCHAR(255) NULL,
+  computa_aprovisionamiento BIT NOT NULL,
+  ocultar_web BIT NOT NULL,
+  no_unnefar BIT NOT NULL,
+  estado_linea_pedido NVARCHAR(255) NOT NULL,
   CONSTRAINT FK_ventas_linea_cabecera_id FOREIGN KEY(venta_id)
     REFERENCES ventas.ventas_cabecera(venta_id)
 );
@@ -87,7 +87,7 @@ CREATE TABLE compras.compras_cabecera (
   cod_cooperativa NVARCHAR(255) NULL,
   puerta NVARCHAR(255) NULL,
   cod_proveedor_cooperativa NVARCHAR(255) NULL,
-  TipoPedido NVARCHAR(255) NULL,
+  tipo_pedido NVARCHAR(255) NULL,
   dias_aplazamiento INT NULL,
   pvl DECIMAL(18,2) NULL,
   pvl_neto DECIMAL(18,2) NULL,
@@ -103,7 +103,8 @@ CREATE TABLE compras.compras_cabecera (
   num_acuerdo_compra NVARCHAR(255) NULL,
   estado_pedido NVARCHAR(255) NULL,
   almacen_origen_pedido_integrado NVARCHAR(255) NULL,
-  CONSTRAINT UQ_compras_cabecera UNIQUE(cod_cooperativa, num_pedido_compra)
+  id_cooperativa NVARCHAR(255) NULL,
+  -- CONSTRAINT UQ_compras_cabecera UNIQUE(cod_cooperativa, num_pedido_compra)
 );
 GO
 
@@ -124,7 +125,7 @@ CREATE TABLE compras.compras_linea (
   dto_gestion DECIMAL(18,2)  NULL,
   pedido_cooperativa NVARCHAR(255)  NULL,
   estado_linea_pedido NVARCHAR(255)  NULL,
-  CONSTRAINT UQ_compras_linea UNIQUE(compra_id, num_linea_pedido_compra),
+  -- CONSTRAINT UQ_compras_linea UNIQUE(compra_id, num_linea_pedido_compra),
   CONSTRAINT FK_compras_linea_cabecera FOREIGN KEY(compra_id)
     REFERENCES compras.compras_cabecera(compra_id)
 );
